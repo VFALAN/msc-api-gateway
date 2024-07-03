@@ -10,6 +10,7 @@ public class RoutesBean {
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder
+
                 .routes()
                 .route("ms-users", r -> r.path("/users/api/**")
                         .filters(f -> f.rewritePath("/users/api/(?<remaining>.*)", "/ms-users/api/${remaining}"))
