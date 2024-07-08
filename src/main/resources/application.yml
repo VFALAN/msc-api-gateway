@@ -1,0 +1,63 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: ms-authentication
+          uri: lb://MSC-MS-AUTHENTICATION
+          filters:
+            - RewritePath=/authentication/api/(?<remaining>.*), /ms-authentication/api/$\{remaining}
+          predicates:
+            - Path= /authentication/api/**
+        - id: ms-users
+          uri: lb://MSC-MS-USERS
+          filters:
+            - RewritePath=/users/api/(?<remaining>.*), /ms-users/api/$\{remaining}
+          predicates:
+            - Path= /users/api/**
+        - id: ms-address
+          uri: lb://MSC-MS-ADDRESS
+          filters:
+            - RewritePath=/address/api/(?<remaining>.*), /ms-address/api/$\{remaining}
+          predicates:
+            - Path= /address/api/**
+        - id: ms-file
+          uri: lb://MSC-MS-FILE
+          filters:
+            - RewritePath=/file/api/(?<remaining>.*), /ms-file/api/$\{remaining}
+          predicates:
+            - Path= /file/api/**
+        - id: ms-processor
+          uri: lb://MSC-MS-PROCESSOR
+          filters:
+            - RewritePath=/processor/api/(?<remaining>.*), /ms-processor/api/$\{remaining}
+          predicates:
+            - Path= /processor/api/**
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+  application:
+    name: msc-api-gateway
+  main:
+    web-application-type: reactive
+server:
+  port: 8079
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+metrics:
+  tags:
+    application: ${spring.application.name}
+msc:
+  app:
+    version: 0.0.1-BETA
